@@ -1,0 +1,33 @@
+{
+  "name": "generator-babel-node-starter-kit",
+  "version": "0.9.0",
+  "description": "Scaffold out a Node.js module using ES6 / ES2015, Babel, Flow, ESLint, Mocha, Chai, Sinon, Istanbul, documentation.js",
+  "homepage": "https://georgschlenkhoff.github.io/generator-node-es6-lib",
+  "author": {
+    "name": "georgschlenkhoff",
+    "email": "georg.schlenkhoff@gmail.com",
+    "url": "https://github.com/georgschlenkhoff"
+  },
+  "files": [
+    "generators"
+  ],
+  "main": "geneators/index.js",
+  "keywords": [
+    "yeoman-generator",
+    "babel",
+    "es6",
+    "es2015",
+    "eslint",
+    "javascript",
+    "node",
+    "flow"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "georgschlenkhoff/generator-node-lib-es-6",
+  "license": "MIT",
+  "dependencies": {
+    "yeoman-generator": "^2.0.2"
+  }
+}
