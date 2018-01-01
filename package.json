@@ -23,11 +23,15 @@
     "flow"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha -w test"
   },
   "repository": "georgschlenkhoff/generator-node-lib-es-6",
   "license": "MIT",
   "dependencies": {
+    "yeoman-assert": "^3.1.0",
     "yeoman-generator": "^2.0.2"
+  },
+  "devDependencies": {
+    "yeoman-test": "^1.7.0"
   }
 }
