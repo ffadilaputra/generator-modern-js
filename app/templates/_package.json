@@ -1,0 +1,36 @@
+{
+  "name": "<%= moduleName %>",
+  "version": "1.0.0",
+  "description": "<%= moduleDescription %>",
+  "license": "MIT",
+  "repository": "<%= githubUsername %>/<%= repoName %>",
+  "author": {
+    "name": "<%= name %>",
+    "email": "<%= email %>",
+    "url": "<%= humanizedWebsite %>"
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "nyc --reporter=text --reporter=html mocha --watch --recursive --timeout 5000 test/**/*.test.js",
+    "docs": "node ./node_modules/documentation/bin/documentation.js build ./src/** -f html -o ./docs && node ./node_modules/documentation/bin/documentation.js readme ./src/** --section=API"
+  },
+  "author": "Georg Schlenkhoff",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-eslint": "^8.1.2",
+    "babel-minify": "^0.2.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-flow": "^6.23.0",
+    "babel-preset-minify": "^0.2.0",
+    "chai": "^4.1.2",
+    "eslint": "^4.14.0",
+    "eslint-plugin-flowtype": "^2.40.1",
+    "flow-bin": "^0.61.0",
+    "mocha": "^4.0.1",
+    "documentation": "^5.3.5",
+    "nyc": "^11.4.1",
+    "sinon": "^4.1.3"
+  }
+}

@@ -28,6 +28,9 @@
   "repository": "georgschlenkhoff/generator-node-lib-es-6",
   "license": "MIT",
   "dependencies": {
+    "humanize-url": "^1.0.1",
+    "superb": "^2.0.0",
+    "underscore.string": "^3.3.4",
     "yeoman-assert": "^3.1.0",
     "yeoman-generator": "^2.0.2"
   },

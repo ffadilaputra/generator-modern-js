@@ -11,6 +11,6 @@ beforeEach(function () {
 
 describe('babel-node-starter-kit', function () {
   it('creates a Node project', function () {
-    assert.file('.package.json')
+    assert.file('package.json')
   })
 })
