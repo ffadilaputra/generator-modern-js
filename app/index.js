@@ -2,6 +2,7 @@ const Generator = require('yeoman-generator')
 const superb = require('superb')
 const _s = require('underscore.string')
 const humanizedUrl = require('humanize-url')
+const normalizeUrl = require('normalize-url')
 
 module.exports = class extends Generator {
 
@@ -25,37 +26,34 @@ module.exports = class extends Generator {
       message: 'What is your repository name?',
       default: _s.slugify(this.appname)
     }, {
-      name: 'name',
-      // TODO: correct prompt
-      message: 'What is your module description?',
-      default: `My ${superb()} module`
-
-    }, {
-      name: 'email',
-      // TODO: correct prompt
-      message: 'What is your module description?',
-      default: `My ${superb()} module`
-    }, {
       name: 'website',
-      // TODO: correct prompt
-      message: 'What is your module description?',
-      default: `My ${superb()} module`
+      message: 'What is the URL of your website?',
+      store: true,
+      validate: x => x.length > 0 ? true : 'You have to provide a website URL',
+      filter: x => normalizeUrl(x)
     }]).then((answers) => {
       const tpl = {
         moduleName: answers.moduleName,
         moduleDescription: answers.moduleDescription,
         githubUsername: answers.githubUsername,
         repoName: answers.repoName,
-        name: answers.name,
-        email: answers.email,
+        name: this.user.git.name(),
+        email: this.user.git.email(),
         humanizedWebsite: humanizedUrl(answers.website)
-        
       }
+
+      const mv = (from, to) => {
+        this.fs.move(this.destinationPath(from), this.destinationPath(to))
+      }
+
       this.fs.copyTpl(
-        this.templatePath('_package.json'),
-        this.destinationPath('package.json'),
+        `${this.templatePath()}/**`,
+        this.destinationPath(),
         tpl
       )
+      mv('_package.json', 'package.json')
+      mv('index.test.js', './test/index.test.js')
+
     })
   }
 

@@ -6,11 +6,17 @@ beforeEach(function () {
   return helpers.run(path.join(__dirname, '../app'))
     .withOptions({ foo: 'bar' })    // Mock options passed in
     .withArguments(['name-x'])      // Mock the arguments
-    .withPrompts({ coffee: false }) // Mock the prompt answers
+    .withPrompts({ website: 'http://example.com' })    // Mock prompts passed in
 })
 
 describe('babel-node-starter-kit', function () {
+
   it('creates a Node project', function () {
-    assert.file('package.json')
+    assert.file('./package.json')
   })
+
+  it('creates a test file', function () {
+    assert.file('./test/index.test.js')
+  })
+
 })
