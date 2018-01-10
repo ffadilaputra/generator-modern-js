@@ -4,9 +4,13 @@
         "node": true,
 	"mocha": true
     },
+    "plugins": [
+      "ejs"
+    ],
     "extends": "eslint:recommended",
     "parserOptions": {
-        "sourceType": "module"
+        "sourceType": "module",
+	"ecmaVersion": 8
     },
     "rules": {
         "indent": [
