@@ -2,15 +2,15 @@
 const <%= moduleName %> = require('../src/index')
 const expect = require('chai').expect
 
-describe(<%= moduleName %>, () => {
+describe('<%= moduleName %>\'s ', () => {
 
-  describe('an method', () => {
+  describe('method', () => {
     it('fulfills a function', () => {
-      expect(null).to.be.a('null')
+      expect(<%= moduleName %>).to.respondTo('myFn')
     })
   })
 
-  describe('an async method', () => {
+  describe('async method', () => {
     it('fulfills an async function', async () => {
       expect(null).to.be.a('null')
     })

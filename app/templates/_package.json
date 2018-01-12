@@ -11,7 +11,11 @@
   },
   "main": "index.js",
   "scripts": {
-    "test": "nyc --reporter=text --reporter=html mocha --watch --recursive --timeout 5000 test/**/*.test.js",
-    "docs": "node ./node_modules/documentation/bin/documentation.js build ./src/** -f html -o ./docs && node ./node_modules/documentation/bin/documentation.js readme ./src/** --section=API"
+    "babel": "npx babel --watch src --out-file <%= moduleName %>.js > /dev/null 2>&1 &",
+    "docs": "npx documentation build ./src/** -f html -o ./docs && npx documentation readme ./src/** --section=API",
+    "flow": "cd src && npx flow && cd ..",
+    "lint": "npx eslint src/; exit 0",
+    "test": "mocha --require babel-core/register test",
+    "watch": "npm run flow && nyc --require babel-core/register --reporter=text --reporter=html mocha --watch --recursive --timeout 5000 test/**/*.test.js"
   }
 }

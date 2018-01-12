@@ -1,13 +1,13 @@
 {
+    "parser": "babel-eslint",
+    "plugins": [
+        "flowtype"
+    ],
     "env": {
         "es6": true,
         "node": true,
 	"mocha": true
     },
-    "plugins": [
-      "ejs",
-      "flowtype"
-    ],
     "extends": [
       "eslint:recommended",
       "plugin:flowtype/recommended"
@@ -32,6 +32,13 @@
         "semi": [
             "error",
             "never"
+        ],
+        "no-console": "off",
+        "valid-jsdoc":
+        [
+          "error", { "prefer":
+            { "arg": "param", "argument": "param", "class": "constructor", "return": "returns" }
+          }
         ]
     }
 }

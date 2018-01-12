@@ -39,7 +39,8 @@ module.exports = class extends Generator {
         repoName: answers.repoName,
         name: this.user.git.name(),
         email: this.user.git.email(),
-        humanizedWebsite: humanizedUrl(answers.website)
+        humanizedWebsite: humanizedUrl(answers.website),
+        website: answers.website
       }
 
       const mv = (from, to) => {
@@ -51,21 +52,37 @@ module.exports = class extends Generator {
         this.destinationPath(),
         tpl
       )
-      mv('_package.json', 'package.json')
+      mv('_package.json', './package.json')
       mv('index.test.js', './test/index.test.js')
+      mv('eslintrc.json', './.eslintrc.json')
+      mv('babelrc', './.babelrc')
+      mv('_flowconfig', './src/.flowconfig')
+      mv('_README.md', './README.md')
+      mv('_gitignore', './.gitignore')
+      mv('index.js', './src/index.js')
+      mv('npmrc', './.npmrc')
 
     })
   }
 
   install() {
     this.npmInstall([
+      'babel-cli',
+      'babel-eslint',
+      'babel-preset-env',
       'chai',
       'documentation',
       'eslint',
       'eslint-plugin-flowtype',
+      'flow-bin',
       'mocha',
       'nyc',
       'sinon'
     ], { 'save-dev': true })
   }
+
+  git() {
+    this.spawnCommandSync('git', ['init']);
+  }
+
 }
