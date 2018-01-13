@@ -4,9 +4,7 @@ const path = require('path')
 
 beforeEach(function () {
   return helpers.run(path.join(__dirname, '../app'))
-    .withOptions({ foo: 'bar' })    // Mock options passed in
-    .withArguments(['name-x'])      // Mock the arguments
-    .withPrompts({ website: 'http://example.com' })    // Mock prompts passed in
+    .withPrompts({ website: 'http://example.com' })
 })
 
 describe('babel-node-starter-kit', function () {
@@ -45,6 +43,10 @@ describe('babel-node-starter-kit', function () {
 
   it('creates a .npmrc file', function () {
     assert.file('./.npmrc')
+  })
+
+  it('creates a .travis.yml file', function () {
+    assert.file('./.travis.yml')
   })
 
 })

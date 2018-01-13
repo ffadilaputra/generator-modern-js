@@ -61,6 +61,7 @@ module.exports = class extends Generator {
       mv('_gitignore', './.gitignore')
       mv('index.js', './src/index.js')
       mv('npmrc', './.npmrc')
+      mv('_travis.yml', './.travis.yml')
 
     })
   }
@@ -82,7 +83,9 @@ module.exports = class extends Generator {
   }
 
   git() {
-    this.spawnCommandSync('git', ['init']);
+    if (!this.options['skip-install']) {
+      this.spawnCommandSync('git', ['init'])
+    }
   }
 
 }
