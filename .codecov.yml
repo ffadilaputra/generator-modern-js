@@ -5,6 +5,6 @@ coverage:
         url: "https://hooks.slack.com/services/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"
         threshold: 1%
         only_pulls: false
-        branches: null
+        branches: master
         flags: null
         paths: null
