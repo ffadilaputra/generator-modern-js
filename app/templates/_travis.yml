@@ -2,5 +2,7 @@ language: node_js
 node_js:
   - "node"
 after_script:
-  - npx nyc --reporter=text-lcov npm test > coverage.lcov
+  - nyc --reporter=text-lcov npm test > coverage.lcov
   - codecov
+notifications:
+  email: false
