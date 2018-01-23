@@ -1,3 +1,12 @@
+TODO: upload to npm
+TODO: add travis
+TODO: add codecov
+TODO: test if babel library is built in lib or index or name of package
+TODO: optimize watch
+TODO: add david-dm
+TODO: add david-dm-dev
+TODO: add downloads https://github.com/IndigoUnited/node-cross-spawn
+TODO: add https://blog.fossasia.org/getting-code-coverage-in-a-nodejs-project-using-travis-and-codecov/
 # generator-babel-node-starter-kit [![NPM version][npm-image]][npm-url] [![Dependency Status][daviddm-image]][daviddm-url]
 
 Scaffold out a Node.js module using:
@@ -49,6 +58,7 @@ yo create module --name myModule
 1. Document signatures using `:JsDoc`in (Neo)Vim
 1. Write unit tests for modules and its functions
 1. Build documentation with `npm run docs`
+TODO: how to upload documentation
 1. Upload package to GitHub
 1. Implement one function after the other
 
