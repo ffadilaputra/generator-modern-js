@@ -54,14 +54,15 @@ module.exports = class extends Generator {
       message: 'Do you want to post Codecov status messages to Slack?'
     }, {
       name: 'codecovToken',
-      type: 'secret',
+      type: 'password',
       message: x => 'What is your Codecov token found at '
-        + `http://codecov.io/account/gh/${x.githubUsername}/access`,
+        + `https://codecov.io/account/gh/${x.githubUsername}/access`,
+      store: true,
       validate: x => x.length > 0 ? true : 'You have to provide a token',
       when: x => x['travis-codecov']
     }, {
       name: 'slackWebhook',
-      type: 'input',
+      type: 'password',
       store: true,
       message: 'What is your Slack Webhook, found at https://goo.gl/UeiyQi',
       when: x => x['travis-codecov']
@@ -115,11 +116,14 @@ module.exports = class extends Generator {
 
   encryptCodecovToken() {
     // Encrypt token with Codecov API
+    // TODO: activate repo by visiting https://codecov.io/gh/user/repo
     if (tpl.travisCodecov) {
+      var done = this.async()
       utils.encryptCodecovValue(tpl.slackWebhook, { repo: tpl.repoName,
         token: tpl.codecovToken, user: tpl.githubUsername })
         .then((encryptedWebhook) => {
           tpl.encryptedWebhook = encryptedWebhook
+          done()
         })
     }
   }

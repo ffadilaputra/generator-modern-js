@@ -18,6 +18,7 @@ const encryptCodecovValue = (value, config) => {
     const host = 'codecov.io'
     const path = `/api/encode/gh/${config.user}/${config.repo}?`
       + `access_token=${config.token}`
+    value = `value=${value}`
     const httpsService = new HttpsService()
     httpsService.post(host, path, value).then((resp) => {
       if (resp.error) return reject(resp.error.reason)
@@ -31,10 +32,6 @@ const encryptCodecovValue = (value, config) => {
 class HttpsService {
   constructor() {
     this.httpsService = require('https')
-  }
-
-  set https(fn) {
-    this.httpsService = fn
   }
 
   post(host, path, payload) {
