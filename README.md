@@ -1,15 +1,17 @@
-TODO: upload to npm
-TODO: add travis
-TODO: add codecov
-TODO: test if babel library is built in lib or index or name of package
-TODO: optimize watch
-TODO: add david-dm
+TODO: rename to ModernJS
+TODO: npx codecov & travis
 TODO: add david-dm-dev
+TODO: add screenshots
+TODO: add screenshots to WIKI
+TODO: add develop section in README
+TODO: change goo.gl links
+TODO: do not create local yo-rc.json
 TODO: add downloads https://github.com/IndigoUnited/node-cross-spawn
 TODO: add https://blog.fossasia.org/getting-code-coverage-in-a-nodejs-project-using-travis-and-codecov/
-# generator-babel-node-starter-kit [![NPM version][npm-image]][npm-url] [![Dependency Status][daviddm-image]][daviddm-url]
+TODO: upload to npm
+# generator-modern-js [![NPM version][npm-image]][npm-url] [![Dependency Status][daviddm-image]][daviddm-url] [![DevDependencies Status][daviddm-dev-image]][daviddm-dev-url] [![Build Status][build-status]][build-url] [![Gitter Support][gitter-image]][gitter-url]
 
-Scaffold out a Node.js module using:
+Scaffold out a working, well-documented, modern Node.js module, made for team collaboration:
 
 * Babel
 * ESLint
@@ -23,6 +25,13 @@ Scaffold out a Node.js module using:
 * Tern support for (Neo)Vim
 * Basic README.md
 * documentation.js
+* CI with Travis
+* GitHub updates sent to Slack
+* Travis test results sent to Slack
+* Codecov report sent to Slack
+* Codecov badge
+* daviddm badge
+* Gitter support channel
 
 ## Installation
 
@@ -30,23 +39,16 @@ First, install [Yeoman](http://yeoman.io) and generator-babel-node-starter-kit u
 
 ```bash
 npm install -g yo
-npm install -g generator-babel-node-starter-kit
+npm install -g generator-modern-js
 ```
 
 Then generate your new project:
 
 ```bash
-yo babel-node-starter-kit
-```
-## Usage
-### Create new module
-
-Babel Node Satrter Kit makes it easy to create a new module with test files. Just run the generator with the name paramter:
-
-```
-yo create module --name myModule
+yo generator-modern-js
 ```
 
+TODO: remove recommendation
 ## Workflow recommendation
 
 1. Build out `README.md` to be clear about capabilities
@@ -70,4 +72,10 @@ MIT © [georgschlenkhoff](https://github.com/georgschlenkhoff)
 [npm-url]: https://npmjs.org/package/generator-babel-node-starter-kit
 [daviddm-image]: https://david-dm.org/georgschlenkhoff/generator-babel-node-starter-kit.svg?theme=shields.io
 [daviddm-url]: https://david-dm.org/georgschlenkhoff/generator-babel-node-starter-kit
+[daviddm-dev-image]: https://david-dm.org/georgschlenkhoff/generator-babel-node-starter-kit/dev-status.svg
+[daviddm-dev-url]: https://david-dm.org/georgschlenkhoff/generator-babel-node-starter-kit?type=dev
+[build-status]: https://travis-ci.org/georgschlenkhoff/generator-modern-js.svg?branch=master
+[build-url]: https://travis-ci.org/georgschlenkhoff/generator-modern-js
+[gitter-image]: https://badges.gitter.im/generator-modern-js.png
+[gitter-url]: https://gitter.im/generator-modern-js/support
 [walking skeleton]: https://codeclimate.com/blog/kickstart-your-next-project-with-a-walking-skeleton
