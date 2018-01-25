@@ -5,6 +5,7 @@ const humanizedUrl = require('humanize-url')
 const normalizeUrl = require('normalize-url')
 const utils = require('./utils')
 const githubService = utils.githubService
+var codecovService = utils.codecovService
 var tpl
 
 module.exports = class extends Generator {
@@ -15,7 +16,7 @@ module.exports = class extends Generator {
     this.option('travis-slack', {
       alias: 'travisSlack',
       type: 'Boolean',
-      desc: 'Post Travis CI status to Slack?'
+      desc: 'Post Travis CI status to Slack?',
     })
     */
 
@@ -67,20 +68,36 @@ module.exports = class extends Generator {
       message: 'What is your Slack Webhook, found at https://goo.gl/UeiyQi',
       when: x => x['travis-codecov']
     }, {
-      name: 'repoName',
-      message: 'What is your repository name?',
-      default: _s.slugify(this.appname)
-    }, {
       name: 'createRepo',
       message: 'Do you want me to create the GitHub repository?',
       type: 'confirm',
       default: true
+    }, {
+      name: 'repoName',
+      message: 'What is your repository name?',
+      default: _s.slugify(this.appname),
+      when: x => x.createRepo,
+      validate: function(repo, ans) {
+        var done = this.async()
+        githubService.init().then(() => { githubService.create(
+          repo, ans.moduleDescription, ans.website).then(() => {
+          done(null, true); return
+        })})
+      }
     }, {
       name: 'getRepo',
       message: 'What is the GitHub repository url?',
       type: 'input',
       default: x => `https://github.com/${x.githubUsername}/${x.repoName}`,
       when: x => !x.createRepo
+    }, {
+      name: 'slackActivated',
+      type: 'input',
+      default: 'y/N',
+      message: 'Have you activated the repo at https://goo.gl/m3CYpR',
+      validate: x => x === ('y' ||'yes'||'Yes'||'Y'||'ja')
+        ? true : 'You must activate the repo',
+      when: x => x['travis-slack'] ||x['travis-codecov']
     }, {
       name: 'website',
       message: 'What is the URL of your website?',
@@ -95,6 +112,7 @@ module.exports = class extends Generator {
         email: this.user.git.email(),
         humanizedWebsite: humanizedUrl(answers.website),
         website: answers.website,
+        travisSlack: answers['travis-slack'],
         travisSlackSecret: answers.travisSlackSecret,
         travisCodecov: answers['travis-codecov'],
         slackWebhook: answers.slackWebhook,
@@ -103,28 +121,22 @@ module.exports = class extends Generator {
     })
   }
 
-  createGitHubRepo() {
-    // Create repo if not existing
-    if (tpl.createRepo) {
-      var done = this.async()
-      githubService.init().then(() => { githubService.create(
-        tpl.repoName, tpl.moduleDescription, tpl.website)
-      }).then(() => { done() })
-        .catch((err) => { done(err) })
-    }
-  }
-
-  encryptCodecovToken() {
-    // Encrypt token with Codecov API
-    // TODO: activate repo by visiting https://codecov.io/gh/user/repo
+  enableCodecov() {
+    // Activate the GitHub repository on Codecov
     if (tpl.travisCodecov) {
+      const config = { user: tpl.githubUsername, token: tpl.codecovToken,
+        repo: tpl.repoName }
       var done = this.async()
-      utils.encryptCodecovValue(tpl.slackWebhook, { repo: tpl.repoName,
-        token: tpl.codecovToken, user: tpl.githubUsername })
-        .then((encryptedWebhook) => {
-          tpl.encryptedWebhook = encryptedWebhook
-          done()
-        })
+
+      this.log(`Activating Codecov repository ${tpl.githubUsername}/`
+        + `${tpl.repoName}`)
+      codecovService.setConfig(config)
+      codecovService.activateCodecovRepo().then(() => {
+        return codecovService.encryptCodecovValue(tpl.slackWebhook)
+      }).then((encryptedWebhook) => {
+        tpl.encryptedWebhook = encryptedWebhook
+        done(null, true); return
+      }).catch((err) => { done(err); return })
     }
   }
 
@@ -147,20 +159,8 @@ module.exports = class extends Generator {
     mv('index.js', './src/index.js')
     mv('npmrc', './.npmrc')
     mv('_travis.yml', './.travis.yml')
+    mv('_codecov.yml', './.codecov.yml')
   }
-    /*
-    }).then((encryptedCodecovToken) => {
- encryptCodecovValue(this.options['slackWebhook'], {
-          user: this.options['githubUsername'],
-          repo: this.options['moduleName'],
-          token: token
-        })
-
-
-
-    })
-    */
-  //}
 
   install() {
     this.npmInstall([
@@ -179,46 +179,19 @@ module.exports = class extends Generator {
     ], { 'save-dev': true })
   }
 
-  git() {
-    if (!this.options['skip-install']) {
-      this.spawnCommandSync('git', ['init'])
-    }
-  }
-
   end() {
-    if (this.options['travis-slack']) {
-      const gitCommit = (msg) => {
-        this.spawnCommandSync('git', ['add', '.'])
-        this.spawnCommandSync('git', ['commit', '-m', msg])
-      }
-
-      gitCommit('initial commit')
-      this.spawnCommandSync('hub', ['create'])
-
-      this.prompt([{
-        name: 'slackActivated',
-        type: 'confirm',
-        default: false,
-        message: 'Have you activated the repo at https://goo.gl/m3CYpR',
-      }]).then(answers => { 
-        if (answers.slackActivated) {
-          const gitPush = () => {
-            this.spawnCommandSync('git', ['push', 'origin', 'master'])
-          }
-
-          gitPush()
-
-          this.spawnCommandSync('travis', ['enable', '-r', `${tpl.githubUsername}/${tpl.repoName}`])
-          this.spawnCommandSync('travis', ['encrypt', tpl.travisSlackSecret, '--add', 'notifications.slack'], { cwd: this.destinationRoot() })
-
-          /* Add codecov support
-           * curl -X POST -d 'value=https://hooks.slack.com/services/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' https://codecov.io/api/encode/gh/georgschlenkhoff/testapp8?access_token=0fcab84b6b0f481198a64eae941da8f4
-           */
-
-          gitCommit('add Slack notifications')
-          gitPush()
-        }
-      })
+    if (tpl.travisSlack) {
+      const done = this.async()
+      githubService.commitPush('bootstrap with ModernJS').then(() => {
+        this.spawnCommandSync('travis', ['enable', '--no-explode',
+          '--no-interactive', '-r', `${tpl.githubUsername}/${tpl.repoName}`])
+        this.spawnCommandSync('travis', ['encrypt', tpl.travisSlackSecret,
+          '--add', 'notifications.slack'],
+        { cwd: this.destinationRoot() })
+        return githubService.commitPush('add Travis-Slack notifications')
+      }).then(() => {
+        done(null, true)
+      }).catch((err) => { done(err) })
     }
   }
 }

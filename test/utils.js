@@ -3,53 +3,71 @@ var chai = require('chai')
 const assert = chai.assert
 const chaiAsPromised = require('chai-as-promised')
 const utils = require('../app/utils')
-const httpsService = utils.httpsService
-const githubService = utils.githubService
 const sinon = require('sinon')
 
 chai.use(chaiAsPromised)
+
 describe('utils', () => {
-  describe('encryptCodecovValue()', () => {
-    sinon.stub(utils, 'encryptCodecovValue').resolves('12345')
-    const config = { token: 'token', user: 'someuser', repo: 'somerepo' }
-    const value = 'somevalue'
-    it('returns a promise', () => {
-      return assert.eventually.typeOf(
-        utils.encryptCodecovValue(value, config), 'string')
+  var codecovService
+  before(() => {
+    codecovService = utils.codecovService
+    sinon.stub(codecovService, 'encryptCodecovValue').resolves()
+    sinon.stub(codecovService, 'activateCodecovRepo').resolves()
+  })
+
+  describe('codecovService', () => {
+    describe('encryptedWebhook()', () => {
+      it('encrypts a value with Codecov API', () => {
+        it('returns a promise', () => {
+          return assert.eventually.typeOf(
+            codecovService.encryptCodecovValue('some'), 'string')
+        })
+      })
+    })
+
+    describe('activateCodecovRepo()', () => {
+      it('activates a Codecov repo', () => {
+        return assert.eventually.typeOf(
+          codecovService.activateCodecovRepo(), 'undefined')
+      })
     })
   })
 
-  describe('httpsService.post()', () => {
+  describe('httpsService', () => {
+    const httpsService = utils.httpsService
     const httpStub = sinon.stub(httpsService, 'post')
     const path = '/api/action'
     const payload = 'payload'
 
-    it('returns a promise', () => {
-      httpStub.resolves({})
-      const host = 'codecov.io'
-      return assert.eventually.typeOf(
-        httpsService.post(host, path, payload), 'object')
-    })
+    describe('post()', () => {
+      it('returns a promise', () => {
+        httpStub.resolves({})
+        const host = 'codecov.io'
+        return assert.eventually.typeOf(
+          httpsService.post(host, path, payload), 'object')
+      })
 
-    it('throws an error if failed', () => {
-      const message = 'getaddrinfo ENOTFOUND wrong'
-      httpStub.rejects(new Error(message))
-      const wrongHost = 'wrong'
-      return assert.isRejected(httpsService.post(
-        wrongHost, path, payload),
-      /getaddrinfo ENOTFOUND wrong/)
+      it('throws an error if failed', () => {
+        const message = 'getaddrinfo ENOTFOUND wrong'
+        httpStub.rejects(new Error(message))
+        const wrongHost = 'wrong'
+        return assert.isRejected(httpsService.post(
+          wrongHost, path, payload),
+        /getaddrinfo ENOTFOUND wrong/)
+      })
     })
   })
 
-  describe('utils.github', () => {
+  describe('github', () => {
     var gitInitAddCommit
+    const githubService = utils.githubService
     sinon.stub(githubService, 'init').resolves()
-    sinon.stub(githubService, 'addCommit').resolves()
+    sinon.stub(githubService, 'commitPush').resolves()
     sinon.stub(githubService, 'create').resolves()
 
     before(() => {
       gitInitAddCommit = githubService.init().then(() => {
-        githubService.addCommit()
+        githubService.commitPush()
       })
     })
 

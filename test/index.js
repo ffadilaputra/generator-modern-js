@@ -2,7 +2,7 @@ const assert = require('yeoman-assert')
 const helpers = require('yeoman-test')
 const path = require('path')
 
-before(() => {
+beforeEach(() => {
   return helpers.run(path.join(__dirname, '../app'))
     .withPrompts({
       website: 'http://example.com',

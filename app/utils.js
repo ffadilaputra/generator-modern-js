@@ -1,32 +1,68 @@
 'use strict'
 
-/**
- * Encrypts a value with Codecov's API. See
- * {@link https://gitter.im/codecov/support/archives/2016/04/27 API hints}
- *
- * @name encryptCodecovValue
- * @function
- * @param value
- * @param {Object}config - The config object
- * @param {string}config.user - GitHub username
- * @param {string}config.repo - GitHub appname
- * @param {string}config.token - Codecov access token
- * @returns {Promise}
- */
-const encryptCodecovValue = (value, config) => {
-  return new Promise((resolve, reject) => {
-    const host = 'codecov.io'
-    const path = `/api/encode/gh/${config.user}/${config.repo}?`
-      + `access_token=${config.token}`
-    value = `value=${value}`
-    const httpsService = new HttpsService()
-    httpsService.post(host, path, value).then((resp) => {
-      if (resp.error) return reject(resp.error.reason)
-      resolve(resp.encoded)
-    }).catch((err) => {
-      reject(err)
+class CodecovService {
+  constructor() {
+    this.httpsService = new HttpsService()
+    this.host = 'codecov.io'
+  }
+
+  /**
+   * Sets the config for CodecovService
+   *
+   * @name setConfig
+   * @function
+   * @param {Object}config - The config object
+   * @param {string}config.user - GitHub username
+   * @param {string}config.repo - GitHub appname
+   * @param {string}config.token - Codecov access token
+   */
+  setConfig(config) {
+    this.user = config.user
+    this.repo = config.repo
+    this.token = config.token
+  }
+
+  /**
+   * Encrypts a value with Codecov's API. See
+   * {@link https://gitter.im/codecov/support/archives/2016/04/27 API hints}
+   *
+   * @name encryptCodecovValue
+   * @function
+   * @param value
+   * @returns {Promise}
+   */
+  encryptCodecovValue(value) {
+    return new Promise((resolve, reject) => {
+      const path = `/api/encode/gh/${this.user}/${this.repo}?`
+        + `access_token=${this.token}`
+      value = `value=${value}`
+      this.httpsService.post(this.host, path, value).then((resp) => {
+        if (resp.error) return reject(resp.error.reason)
+        resolve(resp.encoded)
+      }).catch((err) => {
+        reject(err)
+      })
     })
-  })
+  }
+
+  /**
+   * Activates a GitHub repository on Codecov
+   *
+   * @name activateCodecovRepo
+   * @function
+   * @returns {Promise}
+   */
+  activateCodecovRepo() {
+    return new Promise((resolve, reject) => {
+      const path = `/gh/${this.user}/${this.repo}?access_token=${this.token}`
+      this.httpsService.get(this.host, path).then((resp) => {
+        if (resp.error) return reject(resp.error.reason)
+        resolve(resp.encoded)
+      }).catch((err) => {
+        reject(err)
+      })
+    })
+  }
 }
 
 class HttpsService {
@@ -65,6 +101,33 @@ class HttpsService {
       req.end()
     })
   }
+
+  get(host, path) {
+    return new Promise((resolve, reject) => {
+      const options = {
+        hostname: host,
+        path: path,
+        method: 'GET'
+      }
+
+      const req = this.httpsService.request(options, (res) => {
+        var response = ''
+        res.setEncoding('utf8')
+        res.on('data', (chunk) => {
+          response += chunk
+        })
+        res.on('end', () => {
+          resolve(response)
+        })
+      })
+
+      req.on('error', (e) => {
+        reject(e.message)
+      })
+
+      req.end()
+    })
+  }
 }
 
 class GithubService {
@@ -85,16 +148,18 @@ class GithubService {
   }
 
   /**
-   * Execute git add --all && git commit -m 'initial commit' in pwd
+   * Execute 'git add --all && git commit -m 'initial commit' && \
+   * git commit push origin master' in pwd
    *
-   * @name addCommit
+   * @name commitPush
    * @function
    * @returns {Promise}
    */
-  addCommit() {
-    this._exec(this.spawn('git', ['add', '--all'])).then(() => {
-      this._exec(this.spawn('git', ['commit', '-m', '\'initial commit\'']))
-    })
+  commitPush(msg) {
+    return this._exec(this.spawn('git', ['add', '--all'])).then(() => {
+      return this._exec(this.spawn('git', ['commit', '-m',`'${msg}'`]))
+        .then(() => { return this._exec(this.spawn('git', ['push', 'origin',
+          'master']))})})
   }
 
   /**
@@ -121,9 +186,17 @@ class GithubService {
    */
   init() { return this._exec(this.spawn('git', ['init'])) }
 
+  /**
+   * Executes 'git push origin master' in pwd
+   *
+   * @name push
+   * @function
+   * @returns {Promise}
+   */
+
 }
 
 
 module.exports.httpsService = new HttpsService()
-module.exports.encryptCodecovValue = encryptCodecovValue
+module.exports.codecovService = new CodecovService()
 module.exports.githubService = new GithubService()
