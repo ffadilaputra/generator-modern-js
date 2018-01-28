@@ -42,10 +42,17 @@ module.exports = class extends Generator {
       type: 'confirm',
       default: false
     }, {
+      name: 'slackUsername',
+      message: 'What is your Slack username?',
+      type: 'text',
+      default: x => x.githubUsername,
+      validate: x => x.length > 0 ? true : 'You have to provide a username',
+      when: x => x['travis-slack']
+    }, {
       name: 'travisSlackSecret',
       type: 'password',
       store: true,
-      message: 'Provide your integration token, found at https://goo.gl/3ZwS3o',
+      message: x => `Provide your integration token, found at https://${x.slackUsername}.slack.com/apps/A0F81FP4N-travis-ci?page=1`,
       validate: x => x.length > 0 ? true : 'You have to provide a secret',
       when: x => x['travis-slack']
     }, {
@@ -65,7 +72,7 @@ module.exports = class extends Generator {
       name: 'slackWebhook',
       type: 'password',
       store: true,
-      message: 'What is your Slack Webhook, found at https://goo.gl/UeiyQi',
+      message: x => `What is your Slack Webhook, found at https://${x.slackUsername}.slack.com/services/B8SHSGN5B`,
       when: x => x['travis-codecov']
     }, {
       name: 'createRepo',
@@ -80,7 +87,7 @@ module.exports = class extends Generator {
       validate: function(repo, ans) {
         var done = this.async()
         githubService.init().then(() => { githubService.create(
-          repo, ans.moduleDescription, ans.website).then(() => {
+          repo, ans.moduleDescription, ans.githubUsername).then(() => {
           done(null, true); return
         })})
       }
@@ -94,10 +101,21 @@ module.exports = class extends Generator {
       name: 'slackActivated',
       type: 'input',
       default: 'y/N',
-      message: 'Have you activated the repo at https://goo.gl/m3CYpR',
+      message: x => `Have you activated the repo at https://${x.slackUsername}.slack.com/apps/A0F7YS2SX-github?`,
       validate: x => x === ('y' ||'yes'||'Yes'||'Y'||'ja')
         ? true : 'You must activate the repo',
       when: x => x['travis-slack'] ||x['travis-codecov']
+    }, {
+      name: 'gitterActivated',
+      type: 'confirm',
+      default: false,
+      message: 'Do you want to use Gitter support channel',
+    }, {
+      name: 'gitterRoomEnabled',
+      type: 'confirm',
+      default: false,
+      message: 'Have you enabled the Gitter room at https://gitter.im/home#createcommunity',
+      when: x => x['gitterActivated']
     }, {
       name: 'website',
       message: 'What is the URL of your website?',
@@ -107,6 +125,7 @@ module.exports = class extends Generator {
         moduleName: answers.moduleName,
         moduleDescription: answers.moduleDescription,
         githubUsername: answers.githubUsername,
+        gitterActivated: answers.gitterActivated,
         repoName: answers.repoName,
         name: this.user.git.name(),
         email: this.user.git.email(),
@@ -144,6 +163,7 @@ module.exports = class extends Generator {
     const mv = (from, to) => {
       this.fs.move(this.destinationPath(from), this.destinationPath(to))
     }
+    const mkdir = require('mkdirp')
 
     var path = [`${this.templatePath()}/**`]
     !tpl.travisCodecov ? path.push(`!${this.templatePath()}/_codecov.yml`) : ''
@@ -160,6 +180,7 @@ module.exports = class extends Generator {
     mv('npmrc', './.npmrc')
     mv('_travis.yml', './.travis.yml')
     mv('_codecov.yml', './.codecov.yml')
+    mkdir(`${this.destinationPath('lib')}`)
   }
 
   install() {

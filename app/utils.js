@@ -130,6 +130,8 @@ class HttpsService {
   }
 }
 
+// TODO: replace git spawn commands with https://github.com/nodegit/nodegit/
+// TODO: replace spawnSycn with https://github.com/IndigoUnited/node-cross-spawn
 class GithubService {
   constructor() {
     this.spawn = require('child_process').spawnSync
@@ -172,8 +174,8 @@ class GithubService {
    * @param {string}homepage - The homepage of the author
    * @returns {Promise}
    */
-  create(repoName, description, homepage) { return this._exec(
-    this.spawn('hub', ['create', '-d', description, '-h', homepage, repoName])
+  create(repoName, description, userName) { return this._exec(
+    this.spawn('hub', ['create', '-d', description, '-h', `https://${userName}.github.io/${repoName}`, repoName])
   )}
 
   /**

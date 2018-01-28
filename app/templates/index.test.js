@@ -16,7 +16,4 @@ describe('<%= moduleName %>\'s ', () => {
     })
   })
 
-  // TODO: stub a method with sinon
-  // TODO: stub a promise method
-
 })
