@@ -28,7 +28,7 @@ Scaffold out a working, well-documented, modern Node.js module, made for team co
 
 ## Installation
 
-First, install [Yeoman](http://yeoman.io) and generator-babel-node-starter-kit using [npm](https://www.npmjs.com/) (we assume you have pre-installed [node.js](https://nodejs.org/)).
+First, install [Yeoman](http://yeoman.io) and generator-modern-js using [npm](https://www.npmjs.com/).
 
 ```bash
 npm install -g yo
@@ -66,12 +66,12 @@ MIT © [georgschlenkhoff](https://github.com/georgschlenkhoff)
 
 [Wiki]: https://github.com/georgschlenkhoff/generator-modern-js/wiki
 [demo-image]: demo.gif
-[npm-image]: https://badge.fury.io/js/generator-babel-node-starter-kit.svg
-[npm-url]: https://npmjs.org/package/generator-babel-node-starter-kit
-[daviddm-image]: https://david-dm.org/georgschlenkhoff/generator-babel-node-starter-kit.svg?theme=shields.io
-[daviddm-url]: https://david-dm.org/georgschlenkhoff/generator-babel-node-starter-kit
-[daviddm-dev-image]: https://david-dm.org/georgschlenkhoff/generator-babel-node-starter-kit/dev-status.svg
-[daviddm-dev-url]: https://david-dm.org/georgschlenkhoff/generator-babel-node-starter-kit?type=dev
+[npm-image]: https://badge.fury.io/js/generator-modern-js.svg
+[npm-url]: https://npmjs.org/package/generator-modern-js
+[daviddm-image]: https://david-dm.org/georgschlenkhoff/generator-modern-js.svg?theme=shields.io
+[daviddm-url]: https://david-dm.org/georgschlenkhoff/generator-modern-js
+[daviddm-dev-image]: https://david-dm.org/georgschlenkhoff/generator-modern-js/dev-status.svg
+[daviddm-dev-url]: https://david-dm.org/georgschlenkhoff/generator-modern-js?type=dev
 [build-status]: https://travis-ci.org/georgschlenkhoff/generator-modern-js.svg?branch=master
 [build-url]: https://travis-ci.org/georgschlenkhoff/generator-modern-js
 [gitter-image]: https://badges.gitter.im/generator-modern-js.png
