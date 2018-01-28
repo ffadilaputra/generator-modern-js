@@ -1,4 +1,6 @@
-# generator-modern-js [![NPM version][npm-image]][npm-url] [![Dependency Status][daviddm-image]][daviddm-url] [![DevDependencies Status][daviddm-dev-image]][daviddm-dev-url] [![Build Status][build-status]][build-url] [![Gitter Support][gitter-image]][gitter-url]
+![Logo]
+
+[![NPM version][npm-image]][npm-url] [![Dependency Status][daviddm-image]][daviddm-url] [![DevDependencies Status][daviddm-dev-image]][daviddm-dev-url] [![Build Status][build-status]][build-url] [![Gitter Support][gitter-image]][gitter-url]
 
 Scaffold out a working, well-documented, modern Node.js module, made for team collaboration:
 
@@ -64,6 +66,7 @@ For help visit the [Wiki] or go to the [Gitter support channel][gitter-url]
 
 MIT © [georgschlenkhoff](https://github.com/georgschlenkhoff)
 
+[Logo]: https://raw.githubusercontent.com/georgschlenkhoff/generator-modern-js/master/logo.png
 [Wiki]: https://github.com/georgschlenkhoff/generator-modern-js/wiki
 [demo-image]: demo.gif
 [npm-image]: https://badge.fury.io/js/generator-modern-js.svg
