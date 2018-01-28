@@ -23,8 +23,9 @@
     "flow"
   ],
   "scripts": {
-    "test": "mocha -t 10000 -w test/tests.js",
-    "lint": "npx eslint app/; exit 0"
+    "lint": "npx eslint app/; exit 0",
+    "test": "mocha -t 10000 test/tests.js",
+    "watch": "mocha -t 10000 -w test/tests.js"
   },
   "repository": "georgschlenkhoff/generator-modern-js",
   "license": "MIT",
@@ -44,6 +45,7 @@
     "eslint": "^4.14.0",
     "eslint-plugin-ejs": "0.0.2",
     "eslint-plugin-flowtype": "^2.41.0",
+    "mocha": "^5.0.0",
     "sinon": "^4.1.6",
     "yeoman-test": "^1.7.0"
   }

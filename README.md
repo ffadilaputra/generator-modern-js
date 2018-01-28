@@ -48,6 +48,7 @@ If you want to use Slack with Travis and/or Codecov, or create the GitHub repo a
 * [GitHub integration for Slack](https://github.com/georgschlenkhoff/generator-modern-js/wiki/2.-Slack-token-for-GitHub)
 * [Travis integration for Slack](https://github.com/georgschlenkhoff/generator-modern-js/wiki/4.-Slack-Webhook-for-Travis)
 
+## Usage
 
 Then generate your new project:
 
@@ -57,12 +58,13 @@ yo generator-modern-js
 
 ## Help
 
-For help visit the [Wiki](https://github.com/georgschlenkhoff/generator-modern-js/wiki) or go to the [Gitter support channel][gitter-url]
+For help visit the [Wiki] or go to the [Gitter support channel][gitter-url]
 
 ## License
 
 MIT © [georgschlenkhoff](https://github.com/georgschlenkhoff)
 
+[Wiki]: https://github.com/georgschlenkhoff/generator-modern-js/wiki
 [demo-image]: demo.gif
 [npm-image]: https://badge.fury.io/js/generator-babel-node-starter-kit.svg
 [npm-url]: https://npmjs.org/package/generator-babel-node-starter-kit
