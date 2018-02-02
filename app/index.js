@@ -195,6 +195,7 @@ module.exports = class extends Generator {
       'eslint-plugin-flowtype',
       'flow-bin',
       'mocha',
+      'npx',
       'nyc',
       'sinon'
     ], { 'save-dev': true })
