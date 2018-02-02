@@ -101,7 +101,7 @@ module.exports = class extends Generator {
       name: 'slackActivated',
       type: 'input',
       default: 'y/N',
-      message: x => `Have you activated the repo at https://${x.slackUsername}.slack.com/apps/A0F7YS2SX-github?`,
+      message: x => `Have you activated the repo at https://${x.slackUsername}.slack.com/apps/A0F7YS2SX-github`,
       validate: x => x === ('y' ||'yes'||'Yes'||'Y'||'ja')
         ? true : 'You must activate the repo',
       when: x => x['travis-slack'] ||x['travis-codecov']
