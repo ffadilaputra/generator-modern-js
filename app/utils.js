@@ -37,7 +37,7 @@ class CodecovService {
         + `access_token=${this.token}`
       value = `value=${value}`
       this.httpsService.post(this.host, path, value).then((resp) => {
-        if (resp.error) return reject(resp.error.reason)
+        if (resp.error) return reject(`Codecov error: ${resp.error.reason}`)
         resolve(resp.encoded)
       }).catch((err) => {
         reject(err)

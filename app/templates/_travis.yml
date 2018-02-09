@@ -1,8 +1,19 @@
-language: node_js
+<% if (dockerEnabled) { %>sudo: required
+
+services:
+- docker
+before_install:
+- pip install --user awscli
+- export PATH=$PATH:$HOME/.local/bin<% } else { %>language: node_js
 node_js:
-  - "node"
+  - "node"<% } %>
 after_script:
   - nyc --reporter=text-lcov npm test > coverage.lcov
   - codecov
 notifications:
   email: false
+<% if (dockerEnabled) { %>script:
+- eval $(aws ecr get-login --no-include-email --region eu-central-1)
+- docker build -t <%= githubUsername %>/<%= repoName %> .
+- docker tag <%= githubUsername %>/<%= repoName %>:latest <%= awsRepositoryUri %>:latest
+- docker push <%= awsRepositoryUri %>:latest<% } %>

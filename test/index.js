@@ -54,6 +54,10 @@ describe('babel-node-starter-kit', () => {
     assert.file('./.travis.yml')
   })
 
+  it('creates a Dockerfile', () => {
+    assert.file('./Dockerfile')
+  })
+
   it('creates a ./lib directory', () => {
     assert.file('./lib')
   })

@@ -1,4 +1,4 @@
-# <%= repoName %> [![NPM version][npm-image]][npm-url][![Build Status][build-status]][build-url][![codecov][codecov]][codecov-url][![dependencies Status][dependencies-status][dependencies-url]][![devDependencies Status][devDependencies-status]][devDependencies-url]<%if (gitterActivated) { %>[![Gitter Support][gitter-image]][gitter-url]<% } %>
+# <%= repoName %> [![NPM version][npm-image]][npm-url][![Build Status][build-status]][build-url][![codecov][codecov]][codecov-url][![dependencies Status][dependencies-status]][dependencies-url][![devDependencies Status][devDependencies-status]][devDependencies-url]<%if (gitterActivated) { %>[![Gitter Support][gitter-image]][gitter-url]<% } %>
 
 > <%= moduleDescription %>
 
@@ -36,7 +36,7 @@ MIT © [<%= name %>](<%= website %>)
 
 [npm-image]: https://badge.fury.io/js/<%= repoName %>.svg
 [npm-url]: https://npmjs.org/package/<%= repoName %>
-[build-status]: https://travis-ci.org/<%= githubUsername %>/<%= repoName %>.svg?branch=master)
+[build-status]: https://travis-ci.org/<%= githubUsername %>/<%= repoName %>.svg?branch=master
 [build-url]: https://travis-ci.org/<%= githubUsername %>/<%= repoName %>
 [codecov]: https://codecov.io/gh/<%= githubUsername %>/<%= repoName %>/badge.svg?branch=master
 [codecov-url]: https://codecov.io/gh/<%= githubUsername %>/<%= repoName %>?branch=master
