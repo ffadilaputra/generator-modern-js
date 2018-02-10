@@ -246,18 +246,18 @@ module.exports = class extends Generator {
   }
 
   end() {
-    if (tpl.travisSlack || tpl.dockerEnabled) {
-      const done = this.async()
-      this.spawnCommandSync('travis', ['enable', '--no-explode',
-        '--no-interactive', '-r', `${tpl.githubUsername}/${tpl.repoName}`])
-      if (tpl.dockerEnabled) {
-        this.spawnCommandSync('travis', ['env', 'set', 'AWS_ACCESS_KEY_ID',
-          `${tpl.awsAccessKeyId}`, '--private'])
-        this.spawnCommandSync('travis', ['env', 'set',
-          'AWS_SECRET_ACCESS_KEY', `${tpl.awsSecretAccessKey}`, '--private'])
-      }
-      this.log(`Pushing ${tpl.githubUsername}/${tpl.repoName} to GitHub`)
-      githubService.commitPush('bootstrap with ModernJS').then(() => {
+    this.log(`Pushing ${tpl.githubUsername}/${tpl.repoName} to GitHub`)
+    const done = this.async()
+    githubService.commitPush('bootstrap with ModernJS').then(() => {
+      if (tpl.travisSlack || tpl.dockerEnabled) {
+        this.spawnCommandSync('travis', ['enable', '--no-explode',
+          '--no-interactive', '-r', `${tpl.githubUsername}/${tpl.repoName}`])
+        if (tpl.dockerEnabled) {
+          this.spawnCommandSync('travis', ['env', 'set', 'AWS_ACCESS_KEY_ID',
+            `${tpl.awsAccessKeyId}`, '--private'])
+          this.spawnCommandSync('travis', ['env', 'set',
+            'AWS_SECRET_ACCESS_KEY', `${tpl.awsSecretAccessKey}`, '--private'])
+        }
         if (tpl.travisSlack) {
           this.log('Please run this command if Slack messages are not working')
           this.log(`travis encrypt "${tpl.slackUsername}:`
@@ -267,10 +267,10 @@ module.exports = class extends Generator {
             + `${tpl.travisSlackSecret}"`, '--add', 'notifications.slack',
           '-r', `${tpl.githubUsername}/${tpl.repoName}`],
           { cwd: this.destinationRoot() })
-          return githubService.commitPush('add Slack notifications').then(done).catch(done)
         }
-
-      }).catch(done)
-    }
+        return githubService.commitPush('add Slack notifications')
+          .then(done).catch(done)
+      } else return done()
+    }).catch(done)
   }
 }
