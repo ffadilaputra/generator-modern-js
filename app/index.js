@@ -160,6 +160,7 @@ module.exports = class extends Generator {
         humanizedWebsite: humanizedUrl(answers.website),
         website: answers.website,
         travisSlack: answers['travis-slack'],
+        slackUsername: answers.slackUsername,
         travisSlackSecret: answers.travisSlackSecret,
         travisCodecov: answers['travis-codecov'],
         slackWebhook: answers.slackWebhook,
@@ -255,13 +256,21 @@ module.exports = class extends Generator {
         this.spawnCommandSync('travis', ['env', 'set',
           'AWS_SECRET_ACCESS_KEY', `${tpl.awsSecretAccessKey}`, '--private'])
       }
-      if (tpl.travisSlack) {
-        this.spawnCommandSync('travis', ['encrypt', `"${tpl.slackUsername}:`
-          + `${tpl.travisSlackSecret}"`, '--add', 'notifications.slack'],
-        { cwd: this.destinationRoot() })
-      }
       this.log(`Pushing ${tpl.githubUsername}/${tpl.repoName} to GitHub`)
-      githubService.commitPush('bootstrap with ModernJS').then(done).catch(done)
+      githubService.commitPush('bootstrap with ModernJS').then(() => {
+        if (tpl.travisSlack) {
+          this.log('Please run this command if Slack messages are not working')
+          this.log(`travis encrypt "${tpl.slackUsername}:`
+            + `${tpl.travisSlackSecret}" --add notifications.slack -r`
+            + `${tpl.githubUsername}/${tpl.repoName}`)
+          this.spawnCommandSync('travis', ['encrypt', `"${tpl.slackUsername}:`
+            + `${tpl.travisSlackSecret}"`, '--add', 'notifications.slack',
+          '-r', `${tpl.githubUsername}/${tpl.repoName}`],
+          { cwd: this.destinationRoot() })
+          return githubService.commitPush('add Slack notifications').then(done).catch(done)
+        }
+
+      }).catch(done)
     }
   }
 }
