@@ -4,9 +4,10 @@ services:
 - docker
 before_install:
 - pip install --user awscli
-- export PATH=$PATH:$HOME/.local/bin<% } else { %>language: node_js
+- export PATH=$PATH:$HOME/.local/bin<% }
+language: node_js
 node_js:
-  - "node"<% } %>
+  - "node"
 after_script:
   - nyc --reporter=text-lcov npm test > coverage.lcov
   - codecov

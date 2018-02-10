@@ -1,6 +1,6 @@
 {
   "name": "generator-modern-js",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Scaffold out a Node.js module using ES6 / ES2015, Babel, Flow, ESLint, Mocha, Chai, Sinon, Istanbul, documentation.js",
   "author": {
     "name": "georgschlenkhoff",

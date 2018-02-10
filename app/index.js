@@ -51,7 +51,6 @@ module.exports = class extends Generator {
     }, {
       name: 'travisSlackSecret',
       type: 'password',
-      store: true,
       message: x => `Provide your integration token, found at https://${x.slackUsername}.slack.com/apps/A0F81FP4N-travis-ci?page=1`,
       validate: x => x.length > 0 ? true : 'You have to provide a secret',
       when: x => x['travis-slack']
