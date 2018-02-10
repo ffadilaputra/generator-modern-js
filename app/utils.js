@@ -57,7 +57,7 @@ class CodecovService {
       const path = `/gh/${this.user}/${this.repo}?access_token=${this.token}`
       this.httpsService.get(this.host, path).then((resp) => {
         if (resp.error) return reject(resp.error.reason)
-        resolve(resp.encoded)
+        resolve()
       }).catch((err) => {
         reject(err)
       })

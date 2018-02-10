@@ -17,7 +17,7 @@ Scaffold out a working, well-documented, modern Node.js module, made for team co
 * Basic README.md
 * documentation.js
 * CI with Travis
-* Auto-deployement on EC2 with Docker
+* Auto-deployement on ECR with Docker
 * GitHub updates sent to Slack
 * Travis test results sent to Slack
 * Codecov report sent to Slack

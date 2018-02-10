@@ -112,20 +112,22 @@ module.exports = class extends Generator {
       default: false
     }, {
       name: 'autoDeploy',
-      message: 'Do you want to auto-deploy to Amazon ECS?',
+      message: 'Do you want to auto-deploy to Amazon ECR?',
       type: 'confirm',
       default: false,
       when: x => x.dockerEnabled
     }, {
       name: 'awsAccessKeyId',
       message: 'Please provide the AWS Access Key ID of an IAM user with \'AmazonEC2ContainerRegistryFullAcces\', found at https://console.aws.amazon.com/iam/home#/users',
-      type: 'input',
+      store: true,
+      type: 'password',
       validate: x => x.length > 0 ? true : 'You have to provide an access key id',
       when: x => x.autoDeploy
     }, {
       name: 'awsSecretAccessKey',
       message: 'Please provide the AWS Secret Access Key',
-      type: 'input',
+      store: true,
+      type: 'password',
       validate: x => x.length > 0 ? true : 'You have to provide a secret access key',
       when: x => x.autoDeploy
     }, {
@@ -145,7 +147,7 @@ module.exports = class extends Generator {
       store: true, validate: x => x.length > 0 ? true : 'You have to provide a website URL', filter: x => normalizeUrl(x) }]).then((answers) => {
       tpl = {
         awsAccessKeyId: answers.awsAccessKeyId,
-        awsSecretAccessKey: answers.awsAccessKeyId,
+        awsSecretAccessKey: answers.awsSecretAccessKey,
         createRepo: answers.createRepo,
         dockerEnabled: answers.dockerEnabled,
         moduleName: answers.moduleName,
@@ -189,9 +191,13 @@ module.exports = class extends Generator {
     if (tpl.dockerEnabled) {
       this.log(`Creating AWS ECR repo ${tpl.githubUsername}/${tpl.repoName}.`)
       const { spawnSync } = require('child_process')
-      const result = spawnSync('aws', ['ecr', 'create-repository',
-        '--repository-name', `${tpl.githubUsername}/${tpl.repoName}`])
-      tpl.awsRepositoryUri = JSON.parse(result.stdout).repository.repositoryUri
+      process.env['AWS_ACCESS_KEY_ID'] = tpl.awsAccessKeyId
+      process.env['AWS_SECRET_ACCESS_KEY'] = tpl.awsSecretAccessKey
+      try {
+        const result = spawnSync('/usr/local/bin/aws', ['ecr', 'create-repository',
+          '--repository-name', `${tpl.githubUsername}/${tpl.repoName}`])
+        tpl.awsRepositoryUri = JSON.parse(result.stdout).repository.repositoryUri
+      } catch(e) { this.log('Could not create AWS ECR repo: ' + e) }
     }
   }
 
@@ -241,28 +247,21 @@ module.exports = class extends Generator {
   end() {
     if (tpl.travisSlack || tpl.dockerEnabled) {
       const done = this.async()
-      githubService.commitPush('bootstrap with ModernJS').then(() => {
-        this.spawnCommandSync('travis', ['enable', '--no-explode',
-          '--no-interactive', '-r', `${tpl.githubUsername}/${tpl.repoName}`])
-        if (tpl.travisSlack) {
-          this.spawnCommandSync('travis', ['encrypt', tpl.travisSlackSecret,
-            '--add', 'notifications.slack'],
-          { cwd: this.destinationRoot() })
-          return githubService.commitPush('add Travis-Slack notifications')
-        } else return
-      }).then(() => {
-        if (tpl.dockerEnabled) {
-          this.spawnCommandSync('travis', ['encrypt',
-            `AWS_ACCESS_KEY_ID=${tpl.awsAccessKeyId}`, '--add', 'env.DOCKER_USERNAME'],
-          { cwd: this.destinationRoot() })
-          this.spawnCommandSync('travis', ['encrypt',
-            `AWS_SECRET_ACCESS_KEY=${tpl.awsSecretAccessKey}`, '--add', 'env.DOCKER_PASSWORD'],
-          { cwd: this.destinationRoot() })
-        }
-        return githubService.commitPush('add auto-deploy to ECS')
-      }).then(() => {
-        done(null, true)
-      }).catch((err) => { done(err) })
+      this.spawnCommandSync('travis', ['enable', '--no-explode',
+        '--no-interactive', '-r', `${tpl.githubUsername}/${tpl.repoName}`])
+      if (tpl.dockerEnabled) {
+        this.spawnCommandSync('travis', ['env', 'set', 'AWS_ACCESS_KEY_ID',
+          `${tpl.awsAccessKeyId}`, '--private'])
+        this.spawnCommandSync('travis', ['env', 'set',
+          'AWS_SECRET_ACCESS_KEY', `${tpl.awsSecretAccessKey}`, '--private'])
+      }
+      if (tpl.travisSlack) {
+        this.spawnCommandSync('travis', ['encrypt', `${tpl.slackUsername}:`
+          + tpl.travisSlackSecret, '--add', 'notifications.slack'],
+        { cwd: this.destinationRoot() })
+      }
+      this.log(`Pushing ${tpl.githubUsername}/${tpl.repoName} to GitHub`)
+      githubService.commitPush('bootstrap with ModernJS').then(done).catch(done)
     }
   }
 }

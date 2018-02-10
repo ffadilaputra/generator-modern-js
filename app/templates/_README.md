@@ -1,4 +1,4 @@
-# <%= repoName %> [![NPM version][npm-image]][npm-url][![Build Status][build-status]][build-url][![codecov][codecov]][codecov-url][![dependencies Status][dependencies-status]][dependencies-url][![devDependencies Status][devDependencies-status]][devDependencies-url]<%if (gitterActivated) { %>[![Gitter Support][gitter-image]][gitter-url]<% } %>
+# <%= repoName %> [![NPM version][npm-image]][npm-url] [![Build Status][build-status]][build-url] [![codecov][codecov]][codecov-url] [![dependencies Status][dependencies-status]][dependencies-url] [![devDependencies Status][devDependencies-status]][devDependencies-url]<%if (gitterActivated) { %> [![Gitter Support][gitter-image]][gitter-url]<% } %>
 
 > <%= moduleDescription %>
 
